@@ -3,25 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <title>Bingo o Wojtku</title>
+  <link rel="icon" href="wojtek.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Rubik', sans-serif;
       text-align: center;
-      margin: 50px;
-      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark {
+      background: #121212;
+      color: #eee;
+    }
+    h1 {
+      animation: bounce 1.5s infinite;
+      color: #4a90e2;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .iframe-container {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: inline-block;
+      margin: 20px 0;
     }
     iframe {
       border: 2px solid #444;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      height: 500px;
     }
-    h1 {
-      color: #333;
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+      max-width: 500px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    th {
+      background-color: #4a90e2;
+      color: white;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #4a90e2;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: #357ABD;
     }
   </style>
 </head>
 <body>
   <h1>Bingo o Wojtku</h1>
-  <iframe style="width:500px; height:500px" src="https://bingobaker.com#681b1d5ba4ddddbc"></iframe>
+
+  <div class="iframe-container">
+    <iframe src="https://bingobaker.com#681b1d5ba4ddddbc"></iframe>
+  </div>
+
+  <h2>Najlepsi gracze</h2>
+  <table>
+    <tr><th>Gracz</th><th>Czas</th></tr>
+    <tr><td>Basia</td><td>3:24</td></tr>
+    <tr><td>Kamil</td><td>4:10</td></tr>
+    <tr><td>Wojtek</td><td>5:00 (w szoku)</td></tr>
+  </table>
+
+  <h2>Losowy cytat Wojtka</h2>
+  <p id="cytat">Kliknij, żeby poznać mądrość Wojtka!</p>
+  <button onclick="losujCytat()">Losuj cytat</button>
+
+  <h2>Opcje</h2>
+  <button onclick="toggleDarkMode()">Zmień motyw</button>
+
+  <script>
+    const cytaty = [
+      "Kto rano wstaje... ten śpi popołudniu.",
+      "To nie błąd – to cecha!",
+      "Ej, a co jakby to przepisać w Rust?",
+      "Ja to bym zrobił w Notionie.",
+      "To działa, nie dotykaj!",
+      "Zaraz, to było w Jira?",
+      "Nie commituj, debuguję!",
+    ];
+    function losujCytat() {
+      const index = Math.floor(Math.random() * cytaty.length);
+      document.getElementById("cytat").innerText = cytaty[index];
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+  </script>
 </body>
 </html>
