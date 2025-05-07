@@ -8,12 +8,17 @@
   <link rel="icon" href="wojtek.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Rubik', sans-serif;
       text-align: center;
       background: linear-gradient(to right, #eef2f3, #8e9eab);
-      padding: 30px;
+      padding: 30px 15px;
+      margin: 0;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
       transition: background 0.5s, color 0.5s;
     }
     h1 {
@@ -27,11 +32,15 @@
     .bingo {
       display: grid;
       grid-template-columns: repeat(5, 100px);
-      grid-gap: 10px;
+      grid-gap: 15px;
       justify-content: center;
       margin-top: 20px;
+      max-width: 90vw;
+      margin-left: auto;
+      margin-right: auto;
     }
     .cell {
+    aspect-ratio: 1;
       width: 100px;
       height: 100px;
       background: white;
@@ -39,7 +48,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: clamp(10px, 3vw, 14px);
       padding: 5px;
       border-radius: 8px;
       cursor: pointer;
@@ -53,9 +62,10 @@
       background: #4a90e2;
       color: white;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transform: scale(1.05);
     }
     .scoreboard, .controls {
-      margin-top: 20px;
+      margin-top: 20px 0;
       font-size: 18px;
       color: #333;
     }
@@ -101,7 +111,9 @@
       color: #eee;
     }
     table {
-      margin: 20px auto;
+        width: 100%;
+        max-width: 800px;
+      margin: 30px auto;
       border-collapse: collapse;
       width: 80%;
       max-width: 500px;
@@ -109,6 +121,8 @@
     th, td {
       padding: 10px;
       border: 1px solid #ccc;
+      text-align: left;
+      font-size: 16px;
     }
     th {
       background-color: #4a90e2;
@@ -129,33 +143,44 @@
       background-color: #357ABD;
     }
     /* Styl modala */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6);
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  animation: fadeIn 0.3s ease forwards;
-}
+    .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease forwards;
+    }
 
-.modal-content {
-  background: #fff;
-  padding: 25px 20px;
-  border-radius: 15px;
-  max-width: 90%;
-  width: 400px;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  transform: scale(0.9);
-  opacity: 0;
-}
-
-.modal-content.animate-pop {
-  animation: popUp 0.4s ease forwards;
-}
+    .modal-content {
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 15px;
+    margin: 10% auto;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    opacity: 0;
+    }
+    #modal-img {
+      max-width: 90vw;
+      max-height: 70vh;
+      width: auto;
+      height: auto;
+    }
+    .modal-content.animate-pop {
+    animation: popUp 0.4s ease forwards;
+    }
 
 button {
   padding: 8px 16px;
@@ -345,7 +370,7 @@ button:hover {
 
   <div id="modal" class="modal">
     <div class="modal-content animate-pop">
-      <img id="modal-img" src="" style="max-width:90vw; max-height:60vh;">
+      <img id="modal-img" src="" style="max-width:90vw; max-height:70vh;">
       <button onclick="zamknijModal()" class="close-button">❌</button>
     </div>
   </div>
