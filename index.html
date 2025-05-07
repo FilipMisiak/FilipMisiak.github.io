@@ -31,8 +31,8 @@
     }
     .bingo {
       display: grid;
-      grid-template-columns: repeat(5, 100px);
-      grid-gap: 15px;
+      grid-template-columns: repeat(5, minmax(60px, 0.115fr));;
+      grid-gap: 1px;
       justify-content: center;
       margin-top: 20px;
       max-width: 90vw;
@@ -41,14 +41,14 @@
     }
     .cell {
     aspect-ratio: 1;
-      width: 100px;
-      height: 100px;
+      width: auto;
+      height: auto;
       background: white;
       border: 2px solid #4a90e2;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(10px, 3vw, 14px);
+      font-size: clamp(5px, 3vw, 14px);
       padding: 5px;
       border-radius: 8px;
       cursor: pointer;
