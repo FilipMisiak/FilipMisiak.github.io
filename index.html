@@ -256,36 +256,105 @@ button:hover {
       "hot-dog premium", "Pacanie mały", "Tacosy", "Zmęczony jestem", "Piaskowa"
     ];
 
-    function createBoard() {
-      const bingo = document.getElementById("bingo");
-      bingo.innerHTML = "";
-      hasWon.value = false;
-      finalScreen.style.display = "none";
-      const shuffled = [...phrases].sort(() => Math.random() - 0.5);
+    // Główne zmiany:
 
-      for (let i = 0; i < 25; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.textContent = shuffled[i];
-        cell.addEventListener("click", () => {
-          cell.classList.toggle("selected");
-          updateCount();
-          if (!hasWon.value && checkWin()) {
-            hasWon.value = true;
-            if (winSound) winSound.play(); // Sprawdzamy, czy dźwięk jest dostępny
-            launchConfetti();
-            finalScreen.style.display = "flex";
-          }
-        });
-        bingo.appendChild(cell);
-      }
-      updateCount();
+// 1. Funkcja zapisująca cały stan gry
+function saveGameState() {
+  const cells = document.querySelectorAll('.cell');
+  const gameState = {
+    phrases: Array.from(cells).map(cell => cell.textContent),
+    selected: Array.from(cells).map(cell => cell.classList.contains('selected'))
+  };
+  localStorage.setItem('bingoGameState', JSON.stringify(gameState));
+}
+
+// 2. Funkcja wczytująca stan gry
+function loadGameState() {
+  const savedState = localStorage.getItem('bingoGameState');
+  if (!savedState) return null;
+  return JSON.parse(savedState);
+}
+
+// 3. Zmodyfikowana createBoard
+function createBoard() {
+  const bingo = document.getElementById("bingo");
+  bingo.innerHTML = "";
+  hasWon.value = false;
+  finalScreen.style.display = "none";
+  
+  const savedState = loadGameState();
+  let currentPhrases = [];
+  let selectedIndices = [];
+  
+  if (savedState) {
+    // Wczytaj zapisaną planszę z zaznaczeniami
+    currentPhrases = savedState.phrases;
+    selectedIndices = savedState.selected
+      .map((isSelected, index) => isSelected ? index : null)
+      .filter(index => index !== null);
+  } else {
+    // Stwórz nową losową planszę
+    currentPhrases = [...phrases].sort(() => Math.random() - 0.5);
+  }
+
+  // Stwórz komórki
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.textContent = currentPhrases[i];
+    
+    // Zaznacz jeśli było zapisane
+    if (selectedIndices.includes(i)) {
+      cell.classList.add("selected");
     }
+    
+    cell.addEventListener("click", () => {
+      cell.classList.toggle("selected");
+      updateCount();
+      saveGameState(); // Zapisz cały stan przy każdym kliknięciu
+      if (!hasWon.value && checkWin()) {
+        hasWon.value = true;
+        if (winSound) winSound.play();
+        launchConfetti();
+        finalScreen.style.display = "flex";
+      }
+    });
+    bingo.appendChild(cell);
+  }
+  
+  updateCount();
+}
+
+  // 4. Zmodyfikowana restartGame
+  function restartGame() {
+    // Wyczyść zapisany stan
+    localStorage.removeItem('bingoGameState');
+    // Stwórz nową planszę
+    createBoard();
+  }
+
+// 5. Inicjalizacja przy ładowaniu strony
+window.addEventListener('load', createBoard);
 
     function updateCount() {
       const count = document.querySelectorAll(".cell.selected").length;
       countSpan.textContent = count;
     }
+    function saveSelections() {
+      const selectedCells = [...document.querySelectorAll(".cell.selected")].map(cell => Array.from(cell.parentNode.children).indexOf(cell));
+      localStorage.setItem("selectedCells", JSON.stringify(selectedCells));
+    }
+    function loadSelections() {
+      const savedSelections = JSON.parse(localStorage.getItem("selectedCells"));
+      if (savedSelections) {
+        const bingoCells = document.querySelectorAll(".cell");
+        savedSelections.forEach(index => {
+        bingoCells[index].classList.add("selected");
+        });
+      }
+    }
+
+
 
     function checkWin() {
       const cells = document.querySelectorAll(".cell");
@@ -331,14 +400,13 @@ button:hover {
         requestAnimationFrame(draw);
       }
       draw();
-
-      // Zatrzymanie animacji po 5 sekundach
-      setTimeout(() => {
-        pieces = [];
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }, 5000);
-      restartGame()
-    }
+        // Zatrzymanie animacji po 5 sekundach
+        setTimeout(() => {
+          pieces = [];
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }, 5000);
+        restartGame()
+      }
 
     function toggleTheme() {
       const light = 'linear-gradient(to right, #eef2f3, #8e9eab)';
@@ -348,11 +416,6 @@ button:hover {
       document.body.style.color = current.includes('#eef2f3') ? 'white' : 'black';
     }
 
-    function restartGame() {
-      createBoard();
-    }
-
-    createBoard();
   </script>
   <h2>Najlepsi gracze</h2>
   <table>
